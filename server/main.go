@@ -136,6 +136,11 @@ func main() {
 			Usage: "kcp server listen address",
 		},
 		cli.StringFlag{
+			Name:  "listenTCP",
+			Value: ":29901",
+			Usage: "tcp server listen address",
+		},
+		cli.StringFlag{
 			Name:  "target, t",
 			Value: "127.0.0.1:12948",
 			Usage: "target server address, or path/to/unix_socket",
@@ -276,6 +281,7 @@ func main() {
 	myApp.Action = func(c *cli.Context) error {
 		config := Config{}
 		config.Listen = c.String("listen")
+		config.ListenTCP = c.String("listenTCP")
 		config.Target = c.String("target")
 		config.Key = c.String("key")
 		config.Crypt = c.String("crypt")
@@ -332,6 +338,7 @@ func main() {
 		log.Println("version:", VERSION)
 		log.Println("smux version:", config.SmuxVer)
 		log.Println("listening on:", config.Listen)
+		log.Println("listening tcp on:", config.ListenTCP)
 		log.Println("target:", config.Target)
 		log.Println("encryption:", config.Crypt)
 		log.Println("nodelay parameters:", config.NoDelay, config.Interval, config.Resend, config.NoCongestion)
@@ -439,6 +446,10 @@ func main() {
 			} else {
 				log.Println(err)
 			}
+		}
+
+		if config.ListenTCP != "" {
+			go serveRaw(&config)
 		}
 
 		// udp stack

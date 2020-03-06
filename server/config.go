@@ -8,6 +8,7 @@ import (
 // Config for server
 type Config struct {
 	Listen       string `json:"listen"`
+	ListenTCP    string `json:"listenTCP"`
 	Target       string `json:"target"`
 	Key          string `json:"key"`
 	Crypt        string `json:"crypt"`
