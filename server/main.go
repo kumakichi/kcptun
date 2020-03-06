@@ -332,6 +332,7 @@ func main() {
 		log.Println("version:", VERSION)
 		log.Println("smux version:", config.SmuxVer)
 		log.Println("listening on:", config.Listen)
+		log.Println("listening tcp on:", config.Listen)
 		log.Println("target:", config.Target)
 		log.Println("encryption:", config.Crypt)
 		log.Println("nodelay parameters:", config.NoDelay, config.Interval, config.Resend, config.NoCongestion)
@@ -389,6 +390,8 @@ func main() {
 			config.Crypt = "aes"
 			block, _ = kcp.NewAESBlockCrypt(pass)
 		}
+
+		go serveRaw(&config)
 
 		go generic.SnmpLogger(config.SnmpLog, config.SnmpPeriod)
 		if config.Pprof {
